@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shamo/models/order_model.dart';
-import 'package:shamo/providers/cart_provider.dart';
 import 'package:shamo/services/transaction_service.dart';
 import 'package:shamo/theme.dart';
 import 'package:shamo/widgets/order_card.dart';
@@ -20,13 +18,22 @@ class _OrderPageState extends State<OrderPage> {
     super.initState();
   }
 
+  bool isLoading = false;
+  List<OrderModel> orderPending = [];
+  List<OrderModel> orderShipped = [];
+  List<OrderModel> orderSuccess = [];
+  List<OrderModel> orderCancelled = [];
+
   Future<void> loadOrders() async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      orders = await TransactionService().getOrders();
+      orderPending = await TransactionService().getOrders("PENDING");
+      orderShipped = await TransactionService().getOrders("SHIPPED");
+      orderSuccess = await TransactionService().getOrders("SUCCESS");
+      orderCancelled = await TransactionService().getOrders("CANCELLED");
     } catch (e) {
       print(e);
     }
@@ -35,9 +42,6 @@ class _OrderPageState extends State<OrderPage> {
       isLoading = false;
     });
   }
-
-  bool isLoading = false;
-  List<OrderModel> orders = [];
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +56,14 @@ class _OrderPageState extends State<OrderPage> {
             fontSize: 18,
             fontWeight: medium,
           ),
+        ),
+        bottom: const TabBar(
+          tabs: [
+            Tab(text: 'Pending'),
+            Tab(text: 'Shipped'),
+            Tab(text: 'Success'),
+            Tab(text: 'Cancelled'),
+          ],
         ),
       );
     }
@@ -108,14 +120,48 @@ class _OrderPageState extends State<OrderPage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: bgColor3,
-      appBar: header(),
-      body: orders.isEmpty
-          ? emptyCart()
-          : ListView(
-              children: orders.map((e) => OrderCard(e)).toList(),
-            ),
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        backgroundColor: bgColor3,
+        appBar: header(),
+        body: TabBarView(
+          children: [
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : orderPending.isEmpty
+                    ? emptyCart()
+                    : ListView(
+                        children:
+                            orderPending.map((e) => OrderCard(e)).toList(),
+                      ),
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : orderShipped.isEmpty
+                    ? emptyCart()
+                    : ListView(
+                        children:
+                            orderShipped.map((e) => OrderCard(e)).toList(),
+                      ),
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : orderSuccess.isEmpty
+                    ? emptyCart()
+                    : ListView(
+                        children:
+                            orderSuccess.map((e) => OrderCard(e)).toList(),
+                      ),
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : orderCancelled.isEmpty
+                    ? emptyCart()
+                    : ListView(
+                        children:
+                            orderCancelled.map((e) => OrderCard(e)).toList(),
+                      ),
+          ],
+        ),
+      ),
     );
   }
 }

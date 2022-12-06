@@ -9,8 +9,8 @@ class TransactionService {
   String baseUrl = UrlAPI().baseUrl;
   String token = mainStorage.get("token");
 
-  Future<List<OrderModel>> getOrders() async {
-    var url = '$baseUrl/transactions';
+  Future<List<OrderModel>> getOrders(String status) async {
+    var url = '$baseUrl/transactions?status=$status';
 
     var response = await http.get(
       Uri.parse(url),

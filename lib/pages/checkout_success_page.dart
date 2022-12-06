@@ -53,10 +53,8 @@ class CheckoutSuccessPage extends StatelessWidget {
                 width: 196,
                 height: 44,
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/home', (route) => false);
-                  },
+                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                      context, '/home', (route) => false),
                   style: TextButton.styleFrom(
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
@@ -77,7 +75,8 @@ class CheckoutSuccessPage extends StatelessWidget {
                 width: 196,
                 height: 44,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                      context, '/orders', (route) => false),
                   style: TextButton.styleFrom(
                     backgroundColor: const Color(0xff39374B),
                     shape: RoundedRectangleBorder(

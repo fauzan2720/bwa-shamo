@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shamo/models/order_model.dart';
+import 'package:shamo/providers/page_provider.dart';
 import 'package:shamo/services/transaction_service.dart';
 import 'package:shamo/theme.dart';
 import 'package:shamo/widgets/order_card.dart';
@@ -45,6 +47,8 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    PageProvider pageProvider = Provider.of<PageProvider>(context);
+
     PreferredSizeWidget header() {
       return AppBar(
         backgroundColor: bgColor1,
@@ -95,6 +99,7 @@ class _OrderPageState extends State<OrderPage> {
             const SizedBox(height: 20),
             TextButton(
               onPressed: () {
+                pageProvider.currentIndex = 0;
                 Navigator.pop(context);
               },
               style: TextButton.styleFrom(

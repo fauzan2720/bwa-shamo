@@ -1,11 +1,13 @@
 // ignore_for_file: deprecated_member_use, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shamo/models/product_model.dart';
+import 'package:shamo/providers/cart_provider.dart';
 import 'package:shamo/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChatBubble extends StatelessWidget {
+class ChatBubble extends StatefulWidget {
   final String text;
   final bool isSender;
   final ProductModel? product;
@@ -18,17 +20,101 @@ class ChatBubble extends StatelessWidget {
   });
 
   @override
+  State<ChatBubble> createState() => _ChatBubbleState();
+}
+
+class _ChatBubbleState extends State<ChatBubble> {
+  @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+
+    Future<void> showSuccessDialog() async {
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) => SizedBox(
+          width: MediaQuery.of(context).size.width - (2 * 30),
+          child: AlertDialog(
+            backgroundColor: bgColor3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(
+                        Icons.close,
+                        color: primaryTextColor,
+                      ),
+                    ),
+                  ),
+                  Image.asset(
+                    'assets/images/ic_success.png',
+                    width: 100,
+                    height: 100,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Hurray :)',
+                    style: primaryTextStyle.copyWith(
+                      fontWeight: semiBold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Item added successfully',
+                    style: subtittleTextStyle.copyWith(
+                      fontWeight: regular,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 154,
+                    height: 44,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/cart');
+                      },
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: primaryColor,
+                      ),
+                      child: Text(
+                        'View My Cart',
+                        style: primaryTextStyle.copyWith(
+                          fontWeight: medium,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     Widget productPreview() {
       return Container(
         width: 250,
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSender ? bgColor5 : bgColor4,
+          color: widget.isSender ? bgColor5 : bgColor4,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(isSender ? 12 : 0),
-            topRight: Radius.circular(isSender ? 0 : 12),
+            topLeft: Radius.circular(widget.isSender ? 12 : 0),
+            topRight: Radius.circular(widget.isSender ? 0 : 12),
             bottomLeft: const Radius.circular(12),
             bottomRight: const Radius.circular(12),
           ),
@@ -40,7 +126,7 @@ class ChatBubble extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    product!.galleries![0].url!,
+                    widget.product!.galleries![0].url!,
                     width: 70,
                     height: 70,
                   ),
@@ -52,7 +138,7 @@ class ChatBubble extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        product!.name!,
+                        widget.product!.name!,
                         style: primaryTextStyle.copyWith(
                           fontWeight: regular,
                           fontSize: 14,
@@ -61,7 +147,7 @@ class ChatBubble extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '\$${product!.price}',
+                        '\$${widget.product!.price}',
                         style: priceTextStyle.copyWith(
                           fontWeight: medium,
                           fontSize: 14,
@@ -76,7 +162,10 @@ class ChatBubble extends StatelessWidget {
             Row(
               children: [
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    cartProvider.addCart(widget.product!);
+                    showSuccessDialog();
+                  },
                   style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: primaryColor),
                       padding: const EdgeInsets.symmetric(
@@ -96,7 +185,9 @@ class ChatBubble extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/checkout');
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: primaryColor,
                     padding: const EdgeInsets.symmetric(
@@ -128,14 +219,15 @@ class ChatBubble extends StatelessWidget {
       margin: const EdgeInsets.only(top: 30),
       child: Column(
         crossAxisAlignment:
-            isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            widget.isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          product is UninitializedProductModel
+          widget.product is UninitializedProductModel
               ? const SizedBox()
               : productPreview(),
           Row(
-            mainAxisAlignment:
-                isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: widget.isSender
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             children: [
               Flexible(
                 child: Container(
@@ -148,16 +240,16 @@ class ChatBubble extends StatelessWidget {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: isSender ? bgColor5 : bgColor4,
+                    color: widget.isSender ? bgColor5 : bgColor4,
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(isSender ? 12 : 0),
-                      topRight: Radius.circular(isSender ? 0 : 12),
+                      topLeft: Radius.circular(widget.isSender ? 12 : 0),
+                      topRight: Radius.circular(widget.isSender ? 0 : 12),
                       bottomLeft: const Radius.circular(12),
                       bottomRight: const Radius.circular(12),
                     ),
                   ),
                   child: Text(
-                    text,
+                    widget.text,
                     style: primaryTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: regular,

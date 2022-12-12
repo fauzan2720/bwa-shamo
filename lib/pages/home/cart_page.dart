@@ -56,6 +56,7 @@ class CartPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 pageProvider.currentIndex = 0;
+                Navigator.pop(context);
               },
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(

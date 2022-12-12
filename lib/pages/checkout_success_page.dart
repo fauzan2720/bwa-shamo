@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo/providers/page_provider.dart';
 import 'package:shamo/theme.dart';
 
 class CheckoutSuccessPage extends StatelessWidget {
@@ -6,6 +8,8 @@ class CheckoutSuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PageProvider pageProvider = Provider.of<PageProvider>(context);
+
     Widget header() {
       return AppBar(
         backgroundColor: bgColor1,
@@ -53,8 +57,11 @@ class CheckoutSuccessPage extends StatelessWidget {
                 width: 196,
                 height: 44,
                 child: TextButton(
-                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                      context, '/home', (route) => false),
+                  onPressed: () {
+                    pageProvider.currentIndex = 0;
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/home', (route) => false);
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(

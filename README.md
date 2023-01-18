@@ -1,16 +1,10 @@
-# shamo
+# Shamo
 
-A new Flutter project.
+Aplikasi E-Commerce dan Chat App
 
-## Getting Started
+![Feature Graphics](https://user-images.githubusercontent.com/74108522/213171532-ebadd0ff-4860-4ad6-96bb-8d8df36d9718.png)
+![Thumbnail 2](https://user-images.githubusercontent.com/74108522/213171545-88e88c15-3eec-4147-8de0-6eefcbc0dbd0.png)
 
-This project is a starting point for a Flutter application.
+## Get App
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://play.google.com/store/apps/details?id=com.fauzan.shamo

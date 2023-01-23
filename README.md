@@ -7,7 +7,7 @@ Aplikasi E-Commerce dan Chat App
 
 ## State Management
 
-Provider
+1. Provider
 
 ## Dependencies
 
